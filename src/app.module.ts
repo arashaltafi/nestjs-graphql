@@ -3,6 +3,7 @@ import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { join } from "path";
 import { UsersModule } from './users/users.module';
+import { NewsModule } from './news/news.module';
 
 @Module({
   imports: [
@@ -11,8 +12,15 @@ import { UsersModule } from './users/users.module';
       path: "docs",
       autoSchemaFile: join(process.cwd(), "src/schema.gql"),
       playground: true,
+      formatError: (error) => {
+        return {
+          message: error?.message,
+          code: error?.extensions?.code
+        };
+      },
     }),
     UsersModule,
+    NewsModule,
   ],
 })
 
