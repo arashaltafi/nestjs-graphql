@@ -26,7 +26,7 @@ export class UsersService {
 
     create(input: CreateUserInput): User {
         const user: User = {
-            id: Date.now(),
+            id: this.users.length + 1,
             ...input,
         };
 

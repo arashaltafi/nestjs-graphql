@@ -38,7 +38,7 @@ export class NewsService {
 
     create(input: CreateNewsInput): News {
         const news: News = {
-            id: Date.now(),
+            id: this.news.length + 1,
             createdAt: new Date(),
             ...input,
         };
