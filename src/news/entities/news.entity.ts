@@ -1,9 +1,21 @@
-import { ObjectType, Field, Int } from "@nestjs/graphql";
+import { ObjectType, Field, ID, Int } from "@nestjs/graphql";
+
+export enum NewsCategory {
+    TECH = "TECH",
+    SPORTS = "SPORTS",
+    POLITICS = "POLITICS",
+    OTHER = "OTHER",
+}
+
+export enum NewsStatus {
+    DRAFT = "DRAFT",
+    PUBLISHED = "PUBLISHED",
+}
 
 @ObjectType()
 export class News {
-    @Field(() => Int)
-    id: number;
+    @Field(() => ID)
+    id: string;
 
     @Field()
     title: string;
@@ -13,6 +25,18 @@ export class News {
 
     @Field()
     author: string;
+
+    @Field(() => String)
+    category: NewsCategory;
+
+    @Field(() => String)
+    status: NewsStatus;
+
+    @Field(() => Int)
+    likes: number;
+
+    @Field(() => Int)
+    views: number;
 
     @Field()
     createdAt: Date;

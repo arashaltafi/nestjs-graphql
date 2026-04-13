@@ -10,4 +10,7 @@ export class CreateNewsInput {
 
     @Field()
     author: string;
+
+    @Field()
+    category: string;
 }

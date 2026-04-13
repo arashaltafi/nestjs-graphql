@@ -1,50 +1,60 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { News } from "./entities/news.entity";
+import { News, NewsCategory, NewsStatus } from "./entities/news.entity";
 import { CreateNewsInput } from "./dto/create-news.input";
 import { UpdateNewsInput } from "./dto/update-news.input";
+import { v4 as uuid } from "uuid";
 
 @Injectable()
 export class NewsService {
     private news: News[] = [
         {
-            id: 1,
-            title: "NestJS Released",
-            description: "New version of NestJS released",
-            author: "Arash",
-            createdAt: new Date(),
-        },
-        {
-            id: 2,
-            title: "GraphQL Popular",
-            description: "GraphQL adoption increases",
-            author: "Admin",
-            createdAt: new Date(),
-        },
+            id: "1",
+            title: "title 1",
+            description: "description 1",
+            author: "arash",
+            category: NewsCategory.TECH,
+            status: NewsStatus.PUBLISHED,
+            likes: 1000,
+            views: 8465,
+            createdAt: new Date()
+        }
     ];
 
     findAll(): News[] {
         return this.news;
     }
 
-    findOne(id: number): News {
+    findOne(id: string): News {
         const item = this.news.find((n) => n.id === id);
 
-        if (!item) {
-            throw new NotFoundException("News not found");
-        }
+        if (!item) throw new NotFoundException("News not found");
+
+        // 📊 auto increase views
+        item.views++;
 
         return item;
     }
 
+    search(query: string): News[] {
+        return this.news.filter((n) =>
+            n.title.toLowerCase().includes(query.toLowerCase()),
+        );
+    }
+
     create(input: CreateNewsInput): News {
         const news: News = {
-            id: this.news.length + 1,
+            id: uuid(),
+            title: input.title,
+            description: input.description,
+            author: input.author,
+            category: input.category as any,
+            status: NewsStatus.DRAFT,
+            likes: 0,
+            views: 0,
             createdAt: new Date(),
-            ...input,
         };
 
         this.news.push(news);
-
         return news;
     }
 
@@ -56,15 +66,24 @@ export class NewsService {
         return news;
     }
 
-    remove(id: number): boolean {
+    remove(id: string): boolean {
         const index = this.news.findIndex((n) => n.id === id);
 
-        if (index === -1) {
-            throw new NotFoundException("News not found");
-        }
+        if (index === -1) throw new NotFoundException("News not found");
 
         this.news.splice(index, 1);
-
         return true;
+    }
+
+    like(id: string): News {
+        const news = this.findOne(id);
+        news.likes++;
+        return news;
+    }
+
+    publish(id: string): News {
+        const news = this.findOne(id);
+        news.status = NewsStatus.PUBLISHED;
+        return news;
     }
 }

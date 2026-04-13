@@ -9,10 +9,14 @@ type User {
 }
 
 type News {
-  id: Int!
+  id: ID!
   title: String!
   description: String!
   author: String!
+  category: String!
+  status: String!
+  likes: Int!
+  views: Int!
   createdAt: DateTime!
 }
 
@@ -25,7 +29,8 @@ type Query {
   users: [User!]!
   user(id: Int!): User!
   newsList: [News!]!
-  news(id: Int!): News!
+  news(id: String!): News!
+  searchNews(query: String!): [News!]!
 }
 
 type Mutation {
@@ -34,7 +39,9 @@ type Mutation {
   removeUser(id: Int!): Boolean!
   createNews(input: CreateNewsInput!): News!
   updateNews(input: UpdateNewsInput!): News!
-  removeNews(id: Int!): Boolean!
+  removeNews(id: String!): Boolean!
+  likeNews(id: String!): News!
+  publishNews(id: String!): News!
 }
 
 input CreateUserInput {
@@ -52,11 +59,14 @@ input CreateNewsInput {
   title: String!
   description: String!
   author: String!
+  category: String!
 }
 
 input UpdateNewsInput {
   title: String
   description: String
   author: String
-  id: Int!
+  category: String
+  id: ID!
+  status: String
 }
